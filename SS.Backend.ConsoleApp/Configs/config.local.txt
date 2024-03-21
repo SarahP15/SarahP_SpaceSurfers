@@ -1,8 +1,0 @@
-﻿ConnectionString=Server=.\;Initial Catalog=db;UserID=Alice;Password=StrongPassword;		-- DAT file, key value pair, not best choice
-MaxRetryAttempts=10
-TimeoutLimitInSeconds=100
-MaxUploadCount=15
-AllowedUploadFileTypes=pdf,docx,xlsx,png		-- good to have a config per environment
-
--- ignore these config files in github (appName-config.*.txt)
--- store in the environment itself (local in local machine, prod in prod machine, etc)

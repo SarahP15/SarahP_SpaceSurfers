@@ -2,7 +2,7 @@
   "name": "Frontend",
   "version": "1.0.0",
   "scripts": {
-    "start": "lite-server"
+    "start": "lite-server --baseDir=\"./wwwroot\""
   },
   "devDependencies": {
     "lite-server": "^2.6.1"

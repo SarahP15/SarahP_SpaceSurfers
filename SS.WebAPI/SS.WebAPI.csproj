@@ -7,16 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.16" />
-    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
-    <PackageReference Include="MimeKit" Version="4.4.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuthAPI\AuthAPI.csproj" />
     <ProjectReference Include="..\SS.Backend.DataAccess\SS.Backend.DataAccess.csproj" />
     <ProjectReference Include="..\SS.Backend.Security.AuthN\SS.Backend.Security.AuthN.csproj" />
     <ProjectReference Include="..\SS.Backend.Security\SS.Backend.Security.csproj" />
@@ -27,6 +23,28 @@
     <ProjectReference Include="..\SS.Backend.Tests.Security.Authentication\SS.Backend.Tests.Security.Authentication.csproj" />
     <ProjectReference Include="..\SS.Backend.Tests.Security.Authorization\SS.Backend.Tests.Security.Authorization.csproj" />
     <ProjectReference Include="..\SS.ConsoleApp\SS.ConsoleApp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\images\sslogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\ssname.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\scripts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\style.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SS.Backend.Security;
 using SS.Backend.Services.EmailService;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace AuthAPI.Controllers
 {
@@ -9,10 +12,12 @@ namespace AuthAPI.Controllers
     public class AuthNController : Controller
     {
         private readonly SSAuthService _authService;
+        private readonly IConfiguration _config;
 
-        public AuthNController(SSAuthService authService)
+        public AuthNController(SSAuthService authService, IConfiguration config)
         {
             _authService = authService;
+            _config = config;
         }
 
         [HttpPost("sendOTP")]
@@ -46,7 +51,18 @@ namespace AuthAPI.Controllers
                 return BadRequest(response.ErrorMessage);
             }
 
-            return Ok(new { principal });
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var Sectoken = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Issuer"],
+              null,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+
+            var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+
+            return Ok(token);
         }
     }
 }
