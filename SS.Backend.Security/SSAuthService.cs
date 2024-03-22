@@ -1,7 +1,10 @@
-﻿using SS.Backend.DataAccess;
+﻿using Microsoft.IdentityModel.Tokens;
+using SS.Backend.DataAccess;
 using SS.Backend.Services.LoggingService;
 using SS.Backend.SharedNamespace;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace SS.Backend.Security
 {
@@ -339,22 +342,45 @@ namespace SS.Backend.Security
             return ssPrincipal;
         }
 
-        //private string GenerateJwtToken(string username, string role)
-        //{
-        //    var tokenHandler = new JwtSecurityTokenHandler();
-        //    var key = Encoding.ASCII.GetBytes(jwtSecret);
-        //    var tokenDescriptor = new SecurityTokenDescriptor
-        //    {
-        //        Subject = new ClaimsIdentity(new[]
-        //        {
-        //            new Claim(ClaimTypes.Name, username),
-        //            new Claim(ClaimTypes.Role, role)
-        //        }),
-        //        Expires = DateTime.UtcNow.AddDays(7),
-        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        //    };
-        //    var token = tokenHandler.CreateToken(tokenDescriptor);
-        //    return tokenHandler.WriteToken(token);
-        //}
+        public string GenerateAccessToken(string username, IDictionary<string, string> roles)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("g3LQ4A6$h#Z%2&t*BKs@v7GxU9$FqNpDrn");
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Iss, "https://spacesurfers.auth.com/"),
+                new Claim(JwtRegisteredClaimNames.Aud, "spacesurfers"),
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Value));
+            }
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public List<string> GetRolesFromToken(string accessToken)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(accessToken);
+
+            string subject = token.Subject;
+            string expirationTime = token.ValidTo.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string? roleClaim = token.Claims.FirstOrDefault(claim => claim.Type == "role")?.Value;
+
+            return new List<string> { subject, expirationTime, roleClaim ?? "Role claim not found" };
+        }
+
     }
 }
